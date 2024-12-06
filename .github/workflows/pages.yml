@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main  # Trigger workflow when pushing to the main branch
-
   workflow_dispatch:  # Allow manual trigger from GitHub Actions UI
 
 permissions:
@@ -45,14 +44,6 @@ jobs:
             echo "Export failed. No './out' folder found."
             exit 1
           fi
-
-      - name: Install PM2 globally
-        run: npm install pm2 -g
-
-      - name: Start Next.js app using PM2
-        run: |
-          # Start Next.js app with PM2 (you can modify it based on your needs)
-          pm2 start npm --name "nextjs-app" -- run start
 
       - name: Upload artifact (exported files)
         uses: actions/upload-pages-artifact@v1
