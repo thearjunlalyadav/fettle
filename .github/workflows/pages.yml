@@ -43,10 +43,10 @@ jobs:
       - name: Save PM2 process list
         run: pm2 save
 
-      - name: Upload artifact (build output)
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./out  # Ensure this is the correct path where your static files are stored after next export.
+#      - name: Upload artifact (build output)
+#        uses: actions/upload-pages-artifact@v1
+#        with:
+#          path: ./out  # Ensure this is the correct path where your static files are stored after next export.
 
   deploy:
     environment:
