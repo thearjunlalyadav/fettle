@@ -3,6 +3,6 @@ module.exports = {
   swcMinify: true,
   assetPrefix: process.env.NODE_ENV === 'production' ? '/' : '',
   images: {
-    unoptimized: true, // Disable the image optimization API for static export
+    disableStaticImages: true, // This will disable image optimization during static export
   },
 }
