@@ -1,3 +1,21 @@
+name: Deploy Next.js site to Pages
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow when pushing to the main branch
+
+  workflow_dispatch:  # Allow manual trigger from GitHub Actions UI
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
