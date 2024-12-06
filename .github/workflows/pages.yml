@@ -1,4 +1,4 @@
-name: Deploy Next.js site to GitHub Pages with PM2
+name: Deploy Next.js site to Pages
 
 on:
   push:
@@ -19,9 +19,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
-
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -36,48 +35,36 @@ jobs:
             echo "::set-output name=runner::npx --no-install"
             exit 0
           else
-            echo "Unable to determine package manager"
+            echo "Unable to determine packager manager"
             exit 1
           fi
-
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: "16"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
-
+      - name: Install PM2 globally
+        run: npm install -g pm2
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
-
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
 
-#      - name: Static HTML export with Next.js
-#        run: ${{ steps.detect-package-manager.outputs.runner }} next export
-
-      # Install PM2 globally
-      - name: Install PM2
-        run: npm install -g pm2
-
-      - name: Start Next.js app with PM2
-        run: |
-          pm2 start npm --name "next-apptest" -- run start
-          pm2 save  # Save the PM2 process list for restarting after a reboot
-          pm2 logs   # View the logs (optional for debugging)
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./out
-
-  # Deployment job
+  # Deploy job
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install PM2
+        run: npm install -g pm2
+      - name: Start Next.js app with PM2
+        run: |
+          pm2 start npm --name "next-app" -- run start
+          pm2 save
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
