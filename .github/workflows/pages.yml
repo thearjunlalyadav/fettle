@@ -15,7 +15,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Build and deploy job
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
@@ -44,9 +43,18 @@ jobs:
       - name: Save PM2 process list
         run: pm2 save
 
-#      - name: Upload PM2 logs (optional)
-#        run: pm2 logs nextjs-app --lines 1000 > pm2-logs.txt
+      - name: Upload artifact (build output)
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./out  # Ensure this is the correct path where your static files are stored after next export.
 
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build_and_deploy
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
