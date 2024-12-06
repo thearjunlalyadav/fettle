@@ -3,7 +3,8 @@ module.exports = {
   swcMinify: true,
   assetPrefix: process.env.NODE_ENV === 'production' ? '/' : '',
   images: {
-    unoptimized: true,  // Disable Next.js image optimization
-    disableStaticImages: true,  // Disable static image imports (if needed)
+    disableStaticImages: true,  // Disable static image imports
+    loader: 'imgix',            // Use an external image loader, which works with `next export`
+    path: '',                   // Prevent the default Next.js image loader
   },
 }
