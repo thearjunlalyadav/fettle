@@ -18,33 +18,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "16"
-
       - name: Install dependencies
-        run: npm install  # npm ka use karte hue dependencies install karenge
-
+        run: npm install
       - name: Build with Next.js
-        run: npm run build  # Build command ke liye npm run build use karenge
+        run: npm run build
+      - name: Start the Next.js app
+        run: npm start
+        background: true
+      - name: Deploy with PM2
+        run: |
+          pm2 start npm --name "nextjs-app" -- run start
 
-      - name: Static HTML export with Next.js
-        run: npm run export  # Export ke liye npm run export use karenge
-
-      - name: Install PM2 globally
-        run: npm install -g pm2  # PM2 ko globally install karenge
-
-      - name: Start app with PM2
-        run: pm2 start npm --name "nextjs-app" -- run start  # PM2 ke zariye Next.js app ko start karenge
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./out
 
   deploy:
     environment:
