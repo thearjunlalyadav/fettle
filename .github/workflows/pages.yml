@@ -1,19 +1,3 @@
-name: Deploy Next.js app using PM2
-
-on:
-  push:
-    branches: ["main"]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pm2-deployment"
-  cancel-in-progress: true
-
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
@@ -32,21 +16,30 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
+      - name: Export static site using Next.js
+        run: npm run export  # Ensure this step is executed and exports the static files to ./out
+
+      - name: Check for exported files
+        run: |
+          if [ -d "./out" ]; then
+            echo "Export successful. Folder './out' exists."
+          else
+            echo "Export failed. No './out' folder found."
+            exit 1
+          fi
+
       - name: Install PM2 globally
         run: npm install pm2 -g
 
       - name: Start Next.js app using PM2
         run: |
-          # Navigate to the directory where the Next.js app is built
+          # Start Next.js app with PM2 (you can modify it based on your needs)
           pm2 start npm --name "nextjs-app" -- run start
 
-      - name: Save PM2 process list
-        run: pm2 save
-
-#      - name: Upload artifact (build output)
-#        uses: actions/upload-pages-artifact@v1
-#        with:
-#          path: ./out  # Ensure this is the correct path where your static files are stored after next export.
+      - name: Upload artifact (exported files)
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./out  # This is where the export files are stored
 
   deploy:
     environment:
