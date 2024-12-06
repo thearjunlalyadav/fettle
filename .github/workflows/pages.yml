@@ -44,8 +44,8 @@ jobs:
       - name: Save PM2 process list
         run: pm2 save
 
-      - name: Upload PM2 logs (optional)
-        run: pm2 logs nextjs-app --lines 1000 > pm2-logs.txt
+#      - name: Upload PM2 logs (optional)
+#        run: pm2 logs nextjs-app --lines 1000 > pm2-logs.txt
 
       - name: Deploy to GitHub Pages
         id: deployment
